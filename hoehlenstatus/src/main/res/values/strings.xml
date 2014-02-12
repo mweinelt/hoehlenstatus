@@ -8,6 +8,18 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_update">Update.</string>
-    <string name="action_settings">Settings</string><string name="status_header">Chaos Darmstadt e.V.</string><string name="website_uri">http://www.chaos-darmstadt.de</string>
+    <string name="action_settings">Settings</string>
+    <string name="status_header">Chaos Darmstadt e.V.</string>
+    <string name="website_uri">http://www.chaos-darmstadt.de</string>
+    <string name="status_status">Status</string>
+    <string name="status_update">Letztes Update</string>
+    <string name="status_geraete">Anzahl der Geräte</string>
+    <string name="status_location">Location</string>
+    <string name="status_street">Wilhelm-Leuschner-Strasse 36</string>
+    <string name="status_plz">64293 Darmstadt</string>
+    <string name="status_gps">49\°52\'45.22\"N   8\°38\'42.56\"E</string>
+    <string name="status_contact">Kontakt</string>
+    <string name="status_phone">06151 6274854</string>
+    <string name="status_mail">info\@chaos\-darmstadt\.de</string>
 
 </resources>
