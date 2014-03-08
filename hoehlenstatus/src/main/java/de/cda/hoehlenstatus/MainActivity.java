@@ -1,18 +1,26 @@
 package de.cda.hoehlenstatus;
 
-import android.app.Activity;
-
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.v4.widget.DrawerLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class MainActivity extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -108,6 +116,12 @@ public class MainActivity extends Activity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
+            return true;
+        }
+
+        if (id == R.id.action_update){
+            Toast.makeText(this, "Updating...", Toast.LENGTH_SHORT).show();
+            new MyAsyncTask().execute("http://api.chaos-darmstadt.de/json");
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -237,4 +251,74 @@ public class MainActivity extends Activity
         }
     }
 
+    private class MyAsyncTask extends AsyncTask<String, Integer, Double> {
+        Boolean status;
+
+        @Override
+        protected Double doInBackground(String... params) {
+
+            try{
+                JSONObject myObject = new JSONObject(sendGet());
+                status = myObject.getBoolean("open");
+            }
+            catch(Exception e){
+                e.printStackTrace();
+            }
+
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    TextView tvStatus = (TextView)findViewById(R.id.textView5);
+                    if (status){
+                        tvStatus.setText("Es ist offen");
+                    }
+                    else{
+                        tvStatus.setText("Leider geschlossen");
+                    }
+
+                }
+            });
+            return null;
+        }
+
+        protected void onPostExecute(Double result) {
+
+        }
+
+        protected void onProgressUpdate(Integer... progress) {
+
+        }
+
+        // HTTP GET request
+        private String sendGet() throws Exception {
+
+            String url = "http://api.chaos-darmstadt.de/json";
+
+            URL obj = new URL(url);
+            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+
+            // optional default is GET
+            con.setRequestMethod("GET");
+
+            //add request header
+            con.setRequestProperty("User-Agent", "Mozilla/5.0");
+
+            int responseCode = con.getResponseCode();
+            System.out.println("\nSending 'GET' request to URL : " + url);
+            System.out.println("Response Code : " + responseCode);
+
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(con.getInputStream()));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+
+            return response.toString();
+        }
+    }
 }
